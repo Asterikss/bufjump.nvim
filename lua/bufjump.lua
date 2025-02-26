@@ -133,6 +133,9 @@ local setup = function(cfg)
   if cfg.backward_same_buf_key then
     vim.keymap.set("n", cfg.backward_same_buf_key, bufjump.backward_same_buf)
   end
+  if cfg.on_success then
+    on_success = cfg.on_success
+  end
 end
 
 return {
