@@ -48,7 +48,8 @@ use({
         require("bufjump").setup({
             forward_key = "<C-n>",
             backward_key = "<C-p>",
-            on_success = nil
+            on_success = nil,
+            on_success_same_buf = nil
         })
     end,
 })
@@ -67,7 +68,7 @@ vim.api.nvim_set_keymap("n", "<M-i>", ":lua require('bufjump').forward_same_buf(
 
 ### on_success
 
-`on_success` is a callback function that only executes after a successful backward or forward jump, which means that if there are no previous buffers in the jumplist, then `on_success` will not be executed.
+`on_success` is a callback function that only executes after a successful backward or forward jump across different buffers, which means that if there are no previous buffers in the jumplist, then `on_success` will not be executed.
 
 Suppose that you want to jump to the last cursor position after exiting the buffer instead of the last cursor position in the jumplist stack, you can set the `on_success` function as followed:
 
@@ -79,7 +80,7 @@ use({
             forward_key = "<C-n>",
             backward_key = "<C-p>",
             on_success = function()
-                vim.cmd([[execute "normal! g`\"zz"]])
+                vim.cmd('normal! g`"zz')
             end,
         })
     end,
@@ -87,7 +88,22 @@ use({
 
 ```
 
-This will jump to the last cursor position before you left the buffer while also center the cursor to the middle of the screen. You can check `:h last-position-jump` for more information.
+This will jump to the last cursor position before you left the buffer while also center the cursor to the middle of the screen. You can check `:h last-position-jump` and ``:h g` `` for more information.
+
+However, this will break jumping using the `forward_same_buf_key` and `backward_same_buf_key`. Because of that, `on_success_same_buf` is also exposed.
+
+You can set it to always center the screen and, when switching buffers, go to the last cursor position:
+
+```lua
+    ...
+    on_success = function()
+      vim.cmd('normal! g`"zz')
+    end,
+    on_success_same_buf = function()
+      vim.cmd('normal! zz')
+    end,
+    ...
+```
 
 ## How it works
 

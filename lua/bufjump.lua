@@ -1,4 +1,5 @@
 local on_success = nil
+local on_success_same_buf = nil
 
 local jumpbackward = function(num)
   vim.cmd([[execute "normal! ]] .. tostring(num) .. [[\<c-o>"]])
@@ -54,8 +55,8 @@ local backward_same_buf = function()
 
   if foundJump then
     jumpbackward(lastUsedJumpPos - j)
-    if on_success then
-      on_success()
+    if on_success_same_buf then
+      on_success_same_buf()
     end
   end
 end
@@ -110,8 +111,8 @@ local forward_same_buf = function()
 
   if foundJump then
     jumpforward(j - lastUsedJumpPos)
-    if on_success then
-      on_success()
+    if on_success_same_buf then
+      on_success_same_buf()
     end
   end
 end
@@ -135,6 +136,9 @@ local setup = function(cfg)
   end
   if cfg.on_success then
     on_success = cfg.on_success
+  end
+  if cfg.on_success_same_buf then
+    on_success_same_buf = cfg.on_success_same_buf
   end
 end
 
